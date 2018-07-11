@@ -1,41 +1,54 @@
 package com.exploration.cqrs.ecommerce.readmodel;
 
-public class FreshInventory {
-	private String id;
-	private String name;
-	private String description;
-	private Integer quantity;
-	private String category;
-	public String getId() {
-		return id;
+import io.vertx.core.json.JsonObject;
+
+public class FreshInventory extends JsonObject {
+	/*
+	 * private Long id; 
+	 * private String name; 
+	 * private String description; 
+	 * private Double quantity; 
+	 * private String category;
+	 */
+	
+	public Long getId() {
+		return this.getLong("_id");
 	}
-	public void setId(String id) {
-		this.id = id;
+
+	public void setId(Long id) {
+		this.put("_id", id);
 	}
+
 	public String getName() {
-		return name;
+		return this.getString("name");
 	}
+
 	public void setName(String name) {
-		this.name = name;
+		this.put("name", name);
 	}
+
 	public String getDescription() {
-		return description;
+		return this.getString("description");
 	}
+
 	public void setDescription(String description) {
-		this.description = description;
+		this.put("description", description);
 	}
-	public Integer getQuantity() {
-		return quantity;
+
+	public Double getQuantity() {
+		return this.getDouble("quantity");
 	}
-	public void setQuantity(Integer quantity) {
-		this.quantity = quantity;
+
+	public void setQuantity(Double quantity) {
+		this.put("quantity", quantity);
 	}
+
 	public String getCategory() {
-		return category;
+		return this.getString("category");
 	}
+
 	public void setCategory(String category) {
-		this.category = category;
+		this.put("category", category);
 	}
-	
-	
+
 }

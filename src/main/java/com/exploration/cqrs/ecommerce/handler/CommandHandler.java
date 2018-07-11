@@ -1,8 +1,18 @@
 package com.exploration.cqrs.ecommerce.handler;
 
-import com.exploration.cqrs.ecommerce.command.Command;
+import com.exploration.cqrs.ecommerce.command.MarkAsReserved;
+import com.exploration.cqrs.ecommerce.command.RegisterNewInventory;
 
-public interface CommandHandler<T extends Command>{
+/**
+ * Abstract class for command handler. 
+ * The extending class should only override the necessary method. 
+ * This way, if a command is added, you only need to add one method here
+ * @author Joshua
+ *
+ */
+public abstract class CommandHandler{
+	
+	public void handle(MarkAsReserved command) {}
 
-	public void Handle(T command);
+	public void handle(RegisterNewInventory command) {}
 }

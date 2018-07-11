@@ -1,7 +1,8 @@
 package com.exploration.cqrs.ecommerce.command;
 
 import java.io.Serializable;
-import java.math.BigDecimal;
+
+import com.exploration.cqrs.ecommerce.handler.CommandHandler;
 
 public class RegisterNewInventory implements Command, Serializable{
 
@@ -51,13 +52,18 @@ public class RegisterNewInventory implements Command, Serializable{
 		return serialVersionUID;
 	}
 
-	public void setId(Long id) {
+	public void setCommandId(Long id) {
 		this.id = id;
 	}
 
 	@Override
-	public Long getId() {
+	public Long getCommandId() {
 		return this.id;
+	}
+
+	@Override
+	public void acceptHandler(CommandHandler handler)  {
+		handler.handle(this);
 	}
 
 }

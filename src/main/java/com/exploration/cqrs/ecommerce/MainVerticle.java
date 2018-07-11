@@ -55,10 +55,10 @@ public class MainVerticle extends AbstractVerticle {
 		
 		// For the sake of exploration. query and command verticle will be deployed from here.
 		// in production, they can be deployed separately
-		vertx.rxDeployVerticle("com.exploration.cqrs.ecommerce.readmodel.ReadVerticle",
+		vertx.rxDeployVerticle("com.exploration.cqrs.ecommerce.ReadVerticle",
 				new DeploymentOptions().setInstances(1))
 		.flatMap(id -> {
-			return vertx.rxDeployVerticle("com.exploration.cqrs.ecommerce.command.CommandVerticle",
+			return vertx.rxDeployVerticle("com.exploration.cqrs.ecommerce.CommandVerticle",
 					new DeploymentOptions().setInstances(1));
 		}).subscribe(id -> {
 			startFuture.complete();
