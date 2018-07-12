@@ -4,6 +4,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import com.exploration.cqrs.ecommerce.event.InventoryRegistered;
+import com.exploration.cqrs.ecommerce.event.InventoryReserved;
 import com.exploration.cqrs.ecommerce.readmodel.FreshInventory;
 import com.exploration.cqrs.ecommerce.readmodel.InventoryReadModelDao;
 
@@ -39,13 +40,18 @@ public class InventoryEventHandler extends EventHandler {
 	@Override
 	public void handle(InventoryRegistered event) {
 		FreshInventory freshInventory = new FreshInventory();
-		freshInventory.setId(event.getSourceId());
-		freshInventory.setName(event.getNewInventory().getName());
-		freshInventory.setDescription(event.getNewInventory().getDescription());
-		freshInventory.setQuantity(event.getNewInventory().getQuantity());
-		freshInventory.setCategory(event.getNewInventory().getCategory());
+		freshInventory.set_id(event.getSourceId());
+		freshInventory.setName(event.getInventoryName());
+		freshInventory.setDescription(event.getInventoryDescription());
+		freshInventory.setQuantity(event.getInventoryQuantity());
+		freshInventory.setCategory(event.getInventoryCategory());
 		
 		this.inventoryDao.save(freshInventory);
+	}
+	
+	@Override
+	public void handle(InventoryReserved event) {
+		// TODO create 1 more collection for reserved inventory
 	}
 
 }

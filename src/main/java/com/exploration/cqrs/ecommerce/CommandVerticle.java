@@ -10,6 +10,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import com.exploration.cqrs.ecommerce.command.Command;
+import com.exploration.cqrs.ecommerce.command.MarkAsReserved;
 import com.exploration.cqrs.ecommerce.command.RegisterNewInventory;
 import com.exploration.cqrs.ecommerce.handler.CommandHandler;
 import com.exploration.cqrs.ecommerce.handler.InventoryCommandHandler;
@@ -128,11 +129,35 @@ public class CommandVerticle extends AbstractVerticle {
 		case "createNewInventory":
 			createNewInventory(message);
 			break;
+		case "markAsReserved":
+			markAsReserved(message);
+			break;
 		default: 
 			message.fail(404, "invalid command:" + action);
 		}
 	}
 
+
+	private void markAsReserved(Message<JsonObject> message) {
+		MarkAsReserved command = new MarkAsReserved();
+		command.setCommandId(System.currentTimeMillis());
+		command.setInventoryId(Long.valueOf(message.body().getString("inventoryId")));
+		
+		// Send to command bus
+		this.commandBus.write(KafkaProducerRecord.create("CMD_TOPIC", command.getCommandId(), 
+				command), done -> {
+				if (done.succeeded()) {
+					RecordMetadata recordMetadata = done.result();
+					LOGGER.info("Message written on topic=" + recordMetadata.getTopic() + ", partition="
+							+ recordMetadata.getPartition() + ", offset=" + recordMetadata.getOffset());
+
+					message.reply(new JsonObject().put("response", "success"));
+				} else {
+					LOGGER.error(done.cause().getMessage(), done.cause());
+					message.fail(1, done.cause().getMessage());
+				}
+			});
+	}
 
 	private void createNewInventory(Message<JsonObject> message) {
 		// TODO some validation will be here

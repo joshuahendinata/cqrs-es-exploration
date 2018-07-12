@@ -2,12 +2,16 @@ package com.exploration.cqrs.ecommerce.boundedcontext;
 
 import java.io.Serializable;
 
-public class InventoryContext implements BoundedContext, Serializable {
+import com.exploration.cqrs.ecommerce.command.MarkAsReserved;
+import com.exploration.cqrs.ecommerce.event.InventoryRegistered;
+import com.exploration.cqrs.ecommerce.event.InventoryReserved;
+import com.fasterxml.jackson.annotation.JsonIgnore;
 
-	/**
-	 * 
-	 */
+public class InventoryContext extends EventSourcedBoundedContext implements Serializable {
+
+	@JsonIgnore
 	private static final long serialVersionUID = -4235829337350879988L;
+	
 	private Long id;
 	private String name;
 	private String description;
@@ -16,12 +20,32 @@ public class InventoryContext implements BoundedContext, Serializable {
 	private String status;
 	private Double soldQuantity = 0.0;
 
+	public InventoryContext() {}
+	
+	public InventoryContext(Long id, String name, String description, 
+			Double quantity, String category) {
+		//super();
+		this.id = id;
+		this.name = name;
+		this.description = description;
+		this.quantity = quantity;
+		this.category = category;
+		
+		InventoryRegistered invRegisteredEvt = new InventoryRegistered();
+		invRegisteredEvt.setSourceId(this.id);
+		invRegisteredEvt.setInventoryName(this.name);
+		invRegisteredEvt.setInventoryDescription(this.description);
+		invRegisteredEvt.setInventoryCategory(this.category);
+		invRegisteredEvt.setInventoryQuantity(this.quantity);
+		this.update(invRegisteredEvt);
+	}
+	
 	@Override
 	public Long getId() {
 		return id;
 	}
 
-	public void setId(Long id) {
+	private void setId(Long id) {
 		this.id = id;
 	}
 
@@ -29,7 +53,7 @@ public class InventoryContext implements BoundedContext, Serializable {
 		return name;
 	}
 
-	public void setName(String name) {
+	private void setName(String name) {
 		this.name = name;
 	}
 
@@ -37,7 +61,7 @@ public class InventoryContext implements BoundedContext, Serializable {
 		return description;
 	}
 
-	public void setDescription(String description) {
+	private void setDescription(String description) {
 		this.description = description;
 	}
 
@@ -45,7 +69,7 @@ public class InventoryContext implements BoundedContext, Serializable {
 		return quantity;
 	}
 
-	public void setQuantity(Double quantity) {
+	private void setQuantity(Double quantity) {
 		this.quantity = quantity;
 	}
 
@@ -53,24 +77,47 @@ public class InventoryContext implements BoundedContext, Serializable {
 		return category;
 	}
 
-	public void setCategory(String category) {
+	private void setCategory(String category) {
 		this.category = category;
-	}
-
-	public Double getSoldQuantity() {
-		return soldQuantity;
-	}
-
-	public void setSoldQuantity(Double soldQuantity) {
-		this.soldQuantity = soldQuantity;
 	}
 
 	public String getStatus() {
 		return status;
 	}
 
-	public void setStatus(String status) {
+	private void setStatus(String status) {
 		this.status = status;
+	}
+
+	public Double getSoldQuantity() {
+		return soldQuantity;
+	}
+
+	private void setSoldQuantity(Double soldQuantity) {
+		this.soldQuantity = soldQuantity;
+	}
+
+	@Override
+	public void onEvent(InventoryRegistered e) {
+		this.setId(e.getSourceId());
+		this.setName(e.getInventoryName());
+		this.setDescription(e.getInventoryDescription());
+		this.setQuantity(e.getInventoryQuantity());
+		this.setCategory(e.getInventoryCategory());
+		this.setVersion(e.getVersion());
+		this.setStatus("FreshInventory");
+	}
+	
+	@Override
+	public void onEvent(InventoryReserved e) {
+		this.setStatus("Reserved");
+	}
+
+	public void markAsReserved(MarkAsReserved command) {
+		InventoryReserved e = new InventoryReserved();
+		e.setSourceId(this.id);
+		e.setVersion(this.getVersion() + 1);
+		this.update(e);
 	}
 
 }

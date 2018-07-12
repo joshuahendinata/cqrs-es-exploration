@@ -7,6 +7,7 @@ import com.exploration.cqrs.ecommerce.boundedcontext.InventoryContext;
 import com.exploration.cqrs.ecommerce.command.MarkAsReserved;
 import com.exploration.cqrs.ecommerce.command.RegisterNewInventory;
 
+import io.reactivex.Single;
 import io.vertx.reactivex.core.Vertx;
 
 public class InventoryCommandHandler extends CommandHandler {
@@ -21,18 +22,26 @@ public class InventoryCommandHandler extends CommandHandler {
 	@Override
 	public void handle(RegisterNewInventory command) {
 		LOGGER.info("inside Handle(RegisterNewInventory)");
-		InventoryContext inv = new InventoryContext();
-		inv.setId(System.currentTimeMillis());
-		inv.setName(command.getName());
-		inv.setDescription(command.getDesc());
-		inv.setQuantity(command.getQty());
-		inv.setCategory(command.getCategory());
+		InventoryContext inv = new InventoryContext(
+				System.currentTimeMillis(), 
+				command.getName(), 
+				command.getDesc(),
+				command.getQty(),
+				command.getCategory());
+		
 		repository.save(inv);
 	}
 
 	@Override
 	public void handle(MarkAsReserved command) {
 		LOGGER.info("inside Handle(MarkAsReserved)");
-		//repository.save(inv);
+		Single<InventoryContext> inv = repository.findById(command.getInventoryId());
+		inv.subscribe(res -> {
+			if ("Reserved".equals(res.getStatus())) {
+				return;
+			}
+			res.markAsReserved(command);
+			repository.save(res);
+		});
 	}
 }

@@ -3,13 +3,13 @@ package com.exploration.cqrs.ecommerce.command;
 import java.io.Serializable;
 
 import com.exploration.cqrs.ecommerce.handler.CommandHandler;
+import com.fasterxml.jackson.annotation.JsonIgnore;
 
 public class RegisterNewInventory implements Command, Serializable{
 
-	/**
-	 * 
-	 */
+	@JsonIgnore
 	private static final long serialVersionUID = 8089067902657315920L;
+	
 	private Long id;
 	private String name;
 	private String desc;

@@ -2,18 +2,20 @@ package com.exploration.cqrs.ecommerce.event;
 
 import java.io.Serializable;
 
-import com.exploration.cqrs.ecommerce.boundedcontext.InventoryContext;
+import com.exploration.cqrs.ecommerce.boundedcontext.EventSourcedBoundedContext;
 import com.exploration.cqrs.ecommerce.handler.EventHandler;
+import com.fasterxml.jackson.annotation.JsonIgnore;
 
-public class InventoryRegistered implements Event, Serializable{
+public class InventoryRegistered extends Event implements Serializable{
 
-	/**
-	 * 
-	 */
+	@JsonIgnore
 	private static final long serialVersionUID = 69351533225504747L;
 	private Long sourceId;
-	private InventoryContext newInventory; 
-
+	private String inventoryName;
+	private String inventoryDescription;
+	private Double inventoryQuantity;
+	private String inventoryCategory;
+	
 	@Override
 	public Long getSourceId() {
 		return sourceId;
@@ -23,17 +25,46 @@ public class InventoryRegistered implements Event, Serializable{
 		this.sourceId = eventId;
 	}
 
-	public InventoryContext getNewInventory() {
-		return newInventory;
+	public String getInventoryName() {
+		return inventoryName;
 	}
 
-	public void setNewInventory(InventoryContext newInventory) {
-		this.newInventory = newInventory;
+	public void setInventoryName(String inventoryName) {
+		this.inventoryName = inventoryName;
 	}
 
+	public String getInventoryDescription() {
+		return inventoryDescription;
+	}
+
+	public void setInventoryDescription(String inventoryDescription) {
+		this.inventoryDescription = inventoryDescription;
+	}
+
+	public Double getInventoryQuantity() {
+		return inventoryQuantity;
+	}
+
+	public void setInventoryQuantity(Double inventoryQuantity) {
+		this.inventoryQuantity = inventoryQuantity;
+	}
+
+	public String getInventoryCategory() {
+		return inventoryCategory;
+	}
+
+	public void setInventoryCategory(String inventoryCategory) {
+		this.inventoryCategory = inventoryCategory;
+	}
+	
 	@Override
 	public void acceptHandler(EventHandler handler) {
 		handler.handle(this);
+	}
+
+	@Override
+	public void acceptBoundedContext(EventSourcedBoundedContext bc) {
+		bc.onEvent(this);
 	}
 
 }

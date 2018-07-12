@@ -21,7 +21,7 @@ public class InventoryReadModelDao {
 	}
 
 	public void save(FreshInventory freshInventory) {
-		this.client.insert("freshInventory", freshInventory.copy(), res ->{
+		this.client.insert("freshInventory", JsonObject.mapFrom(freshInventory), res ->{
 			if (res.succeeded()) {
 				LOGGER.debug("freshInventory saved successfully. ID:" + res.result());
 			} else {
@@ -30,14 +30,14 @@ public class InventoryReadModelDao {
 		});
 	}
 	
-	public Single<List<FreshInventory>> findFreshInventory() {
+	public Single<List<JsonObject>> findFreshInventory() {
 		FindOptions options = new FindOptions()
 				.setLimit(10)
 				.setSort(new JsonObject().put("_id",  1));
 		
 		return this.client
-				.rxFindWithOptions("freshInventory", new JsonObject(), options)
-				.flatMapObservable(res -> {
+				.rxFindWithOptions("freshInventory", new JsonObject(), options);				
+				/*.flatMapObservable(res -> {
 					return Observable.fromIterable(res);
 				})
 				.map(json ->{
@@ -49,6 +49,6 @@ public class InventoryReadModelDao {
 					
 					return result;
 				})
-				.toList();
+				.toList();*/
 	}
 }
