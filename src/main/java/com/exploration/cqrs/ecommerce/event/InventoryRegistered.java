@@ -6,10 +6,8 @@ import com.exploration.cqrs.ecommerce.boundedcontext.EventSourcedBoundedContext;
 import com.exploration.cqrs.ecommerce.handler.EventHandler;
 import com.fasterxml.jackson.annotation.JsonIgnore;
 
-public class InventoryRegistered extends Event implements Serializable{
+public class InventoryRegistered extends Event{
 
-	@JsonIgnore
-	private static final long serialVersionUID = 69351533225504747L;
 	private Long sourceId;
 	private String inventoryName;
 	private String inventoryDescription;

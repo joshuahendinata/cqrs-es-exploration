@@ -37,6 +37,7 @@ public class InventoryCommandHandler extends CommandHandler {
 		LOGGER.info("inside Handle(MarkAsReserved)");
 		Single<InventoryContext> inv = repository.findById(command.getInventoryId());
 		inv.subscribe(res -> {
+			// If the item is already reserved, directly return
 			if ("Reserved".equals(res.getStatus())) {
 				return;
 			}

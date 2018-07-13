@@ -9,6 +9,7 @@ import io.reactivex.Observable;
 import io.reactivex.Single;
 import io.vertx.core.json.JsonObject;
 import io.vertx.ext.mongo.FindOptions;
+import io.vertx.ext.mongo.UpdateOptions;
 import io.vertx.reactivex.ext.mongo.MongoClient;
 
 public class InventoryReadModelDao {
@@ -20,14 +21,27 @@ public class InventoryReadModelDao {
 		this.client = client;
 	}
 
-	public void save(FreshInventory freshInventory) {
-		this.client.insert("freshInventory", JsonObject.mapFrom(freshInventory), res ->{
+	public void save(Object obj, String collection) {
+		this.client.insert(collection, JsonObject.mapFrom(obj), res ->{
 			if (res.succeeded()) {
-				LOGGER.debug("freshInventory saved successfully. ID:" + res.result());
+				LOGGER.debug(obj.getClass().getSimpleName() + " saved successfully. ID:" + res.result());
 			} else {
 				LOGGER.error(res.cause().getMessage(), res.cause());
 			}
 		});
+	}
+	
+	public Single<JsonObject> removeOneAndReturn(JsonObject query, String collection) {
+		return this.client.rxFindOneAndDelete(collection, query);
+	}
+	
+	public Single<List<JsonObject>> findReservedInventory() {
+		FindOptions options = new FindOptions()
+				.setLimit(10)
+				.setSort(new JsonObject().put("_id",  1));
+		
+		return this.client
+				.rxFindWithOptions("reservedInventory", new JsonObject(), options);	
 	}
 	
 	public Single<List<JsonObject>> findFreshInventory() {

@@ -142,6 +142,7 @@ public class CommandVerticle extends AbstractVerticle {
 		MarkAsReserved command = new MarkAsReserved();
 		command.setCommandId(System.currentTimeMillis());
 		command.setInventoryId(Long.valueOf(message.body().getString("inventoryId")));
+		command.setReservedBy(message.body().getString("reservedBy"));
 		
 		// Send to command bus
 		this.commandBus.write(KafkaProducerRecord.create("CMD_TOPIC", command.getCommandId(), 

@@ -213,11 +213,24 @@ public class ReadVerticle extends AbstractVerticle {
 		case "getFreshInventory":
 			getFreshInventory(message);
 			break;
+		case "getReservedInventory":
+			getReservedInventory(message);
+			break;
 		default: 
 			message.fail(404, "invalid command:" + action);
 		}
 	}
 
+
+	private void getReservedInventory(Message<JsonObject> message) {
+		LOGGER.info("inside getReservedInventory");
+		this.inventoryDao.findReservedInventory()
+		.doOnError(err->{
+			message.fail(1, err.getMessage());
+		}).subscribe(res ->{
+			message.reply(new JsonObject().put("result", new JsonArray(res)));
+		});
+	}
 
 	private void getFreshInventory(Message<JsonObject> message) {
 		LOGGER.info("inside all inventory");

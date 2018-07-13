@@ -1,6 +1,7 @@
 package com.exploration.cqrs.ecommerce.boundedcontext;
 
 import java.io.Serializable;
+import java.util.Date;
 
 import com.exploration.cqrs.ecommerce.command.MarkAsReserved;
 import com.exploration.cqrs.ecommerce.event.InventoryRegistered;
@@ -19,6 +20,8 @@ public class InventoryContext extends EventSourcedBoundedContext implements Seri
 	private String category;
 	private String status;
 	private Double soldQuantity = 0.0;
+	private String reservedBy;
+	private Date reserveDate;
 
 	public InventoryContext() {}
 	
@@ -30,6 +33,7 @@ public class InventoryContext extends EventSourcedBoundedContext implements Seri
 		this.description = description;
 		this.quantity = quantity;
 		this.category = category;
+		this.setVersion(1);
 		
 		InventoryRegistered invRegisteredEvt = new InventoryRegistered();
 		invRegisteredEvt.setSourceId(this.id);
@@ -37,6 +41,7 @@ public class InventoryContext extends EventSourcedBoundedContext implements Seri
 		invRegisteredEvt.setInventoryDescription(this.description);
 		invRegisteredEvt.setInventoryCategory(this.category);
 		invRegisteredEvt.setInventoryQuantity(this.quantity);
+		invRegisteredEvt.setVersion(this.getVersion());
 		this.update(invRegisteredEvt);
 	}
 	
@@ -110,12 +115,15 @@ public class InventoryContext extends EventSourcedBoundedContext implements Seri
 	
 	@Override
 	public void onEvent(InventoryReserved e) {
-		this.setStatus("Reserved");
+		this.status = "Reserved";
+		this.reservedBy = e.getReservedBy();
 	}
 
 	public void markAsReserved(MarkAsReserved command) {
 		InventoryReserved e = new InventoryReserved();
-		e.setSourceId(this.id);
+		e.setSourceId(command.getInventoryId());
+		e.setReservedBy(command.getReservedBy());
+		e.setReservedDate(new Date());
 		e.setVersion(this.getVersion() + 1);
 		this.update(e);
 	}

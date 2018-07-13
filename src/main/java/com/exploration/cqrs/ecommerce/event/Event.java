@@ -1,12 +1,14 @@
 package com.exploration.cqrs.ecommerce.event;
 
+import java.io.Serializable;
+
 import com.exploration.cqrs.ecommerce.boundedcontext.EventSourcedBoundedContext;
 import com.exploration.cqrs.ecommerce.handler.EventHandler;
 import com.fasterxml.jackson.annotation.JsonIgnore;
 
 import io.vertx.core.json.JsonObject;
 
-public abstract class Event {
+public abstract class Event implements Serializable{
 	
 	@JsonIgnore
 	public Integer version = -1;

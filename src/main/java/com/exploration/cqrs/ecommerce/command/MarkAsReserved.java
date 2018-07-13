@@ -13,6 +13,7 @@ public class MarkAsReserved implements Command, Serializable {
 
 	private Long commandId;
 	private Long inventoryId;
+	private String reservedBy;
 	
 	@Override
 	public Long getCommandId() {
@@ -29,6 +30,14 @@ public class MarkAsReserved implements Command, Serializable {
 
 	public void setInventoryId(Long inventoryId) {
 		this.inventoryId = inventoryId;
+	}
+
+	public String getReservedBy() {
+		return reservedBy;
+	}
+
+	public void setReservedBy(String reservedBy) {
+		this.reservedBy = reservedBy;
 	}
 
 	@Override

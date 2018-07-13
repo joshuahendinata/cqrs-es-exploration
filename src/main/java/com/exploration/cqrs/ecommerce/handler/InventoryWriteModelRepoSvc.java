@@ -98,8 +98,10 @@ public class InventoryWriteModelRepoSvc implements WriteModelRepoSvc<InventoryCo
 	@Override
 	public Single<InventoryContext> findById(Long id) {
 		final ActorSystem system = ActorSystem.create();
-		final Settings settings = new SettingsBuilder().address(new InetSocketAddress("127.0.0.1", 1113))
-				.defaultCredentials("admin", "changeit").build();
+		final Settings settings = new SettingsBuilder()
+				.address(new InetSocketAddress("127.0.0.1", 1113))
+				.defaultCredentials("admin", "changeit")
+				.build();
 
 		final ActorRef connection = system.actorOf(ConnectionActor.getProps(settings));
 		// final ActorRef readResult = system.actorOf(Props.create(ReadResult.class));
