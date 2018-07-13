@@ -9,6 +9,7 @@ file-uploads/*
 target/*
 maven/*
 mvnw*
+startup-command.txt
 
 ### Vert.x ###
 .vertx/
