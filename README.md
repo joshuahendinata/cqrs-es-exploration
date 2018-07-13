@@ -25,20 +25,21 @@ Besides CQRS/ES, I also explore:
 	
 - download EventStore and start the server (https://eventstore.org/docs/introduction/index.html)
 	
-- run: 'mvn clean install' in the root folder
+- run: `mvn clean install` in the root folder
 	
-- run: 'java -jar ecommerce-1.0.0-SNAPSHOT-fat.jar' in target folder
+- run: `java -jar ecommerce-1.0.0-SNAPSHOT-fat.jar` in target folder
 	
 - Available command (for now, you can test via postman or any webservice client)
+```
+POST http://localhost:8080/api/write/createNewInventory (field: name, desc, category, qty)
 
-   - POST http://localhost:8080/api/write/createNewInventory (field: name, desc, category, qty)
-   
-   - POST http://localhost:8080/api/write/markAsReserved (field: inventoryId, reservedBy)
-   
-   - POST http://localhost:8080/api/read/getFreshInventory 
-   
-   - POST http://localhost:8080/api/read/getReservedInventory 
-	
+POST http://localhost:8080/api/write/markAsReserved (field: inventoryId, reservedBy)
+
+POST http://localhost:8080/api/read/getFreshInventory  
+
+POST http://localhost:8080/api/read/getReservedInventory 
+```
+
 - For debugging in eclipse, create a new Debug configuration. 
 	
    - Main Class: io.vertx.core.Launcher 
