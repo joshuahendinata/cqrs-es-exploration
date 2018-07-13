@@ -47,14 +47,14 @@ Besides CQRS/ES, I also explore:
 
 ## TODO:
 
-- Front end UI (Angular)
+- [ ] Front end UI (Angular)
 
-- 'Order' bounded context
+- [ ] 'Order' bounded context
 	
-- DockerFile for easy testing
+- [ ] DockerFile for easy testing
 	
-- Architecture Documentation
+- [ ] Architecture Documentation
 	
-- Try clustering?
+- [ ] Try clustering?
 	
-- Benchmark the performance
+- [ ] Benchmark the performance
